@@ -133,8 +133,20 @@ def metrics(request, score, matrix):
         gKnown.append(metric.times_correct)
         gImgs += str(metric.img_url) + ';'
 
+    lowest_ten_colleagues = (ColleagueGraph.objects.filter(user=request.user).order_by('times_correct'))[:5]
+    lowest_names = ''
+    lowest_known = []
+    lowest_imgs = ''
+    for metric in lowest_ten_colleagues:
+        lowest_names += str(metric.name) + ';'
+        lowest_known.append(metric.times_correct)
+        lowest_imgs += ((str(metric.img_url) + ';').replace("{width}", "70")).replace("{height}", "70")
+
+    print (lowest_names)
+
     context = RequestContext(request, {'names': names, 'known': known,'mugs': imgs, 'score': score, 'cards': matrix,
-                                       'gNames': gNames, 'gKnown': gKnown,'mugs': gImgs
+                                       'gNames': gNames, 'gKnown': gKnown, 'mugs': gImgs, 'lowest_names': lowest_names,
+                                       'lowest_known': lowest_known, 'lowest_mugs': lowest_imgs
                                        })
     return render_to_response('results.html', context_instance=context)
 
@@ -174,9 +186,11 @@ def four_random_cards(redis_con, network):
 
 def globallyKnownColleagues():
     top_scores = (ColleagueGraph.objects.order_by('-times_correct').values_list('times_correct', flat=True).distinct())
-    top_10_known_colleagues = (ColleagueGraph.objects.order_by('-times_correct').filter(times_correct__in=top_scores[:10]))[:10]
+    top_10_known_colleagues = (ColleagueGraph.objects.order_by('-times_correct')
+                               .filter(times_correct__in=top_scores[:10]))[:10]
 
     return top_10_known_colleagues
+
 
 
 def ajax_suggestion(request):

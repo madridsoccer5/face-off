@@ -40,10 +40,49 @@
         </div>
     </div>
 
-    <div class="row text-center">
+    <div class="row-fluid text-center">
         <div id="metrics" class="carousel slide" data-ride="carousel">
           <!-- Indicators -->
-          <div class="carousel-inner" role="listbox">
+          <div class="carousel-inner">
+           <div class="item active">
+                <div class="row-fluid inline">
+                    <div class="span3">
+                        <div class="thumbnail"
+                            <a><img id="image0" /> </a>
+                         </div>
+                         <h3>Product name</h3>
+			             <p><a class="btn btn-large btn-block" href="#">View details »</a></p>
+                    </div>
+                    <div class="span3">
+                        <div class="thumbnail"
+                            <a href="#x" class="thumbnail" id="image1"> </a>
+                         </div>
+                         <h3>Product name</h3>
+			             <p><a class="btn btn-large btn-block" href="#">View details »</a></p>
+                    </div>
+                    <div class="span3">
+                        <div class="thumbnail"
+                            <a href="#x" class="thumbnail" id="image2"> </a>
+                         </div>
+                         <h3>Product name</h3>
+			             <p><a class="btn btn-large btn-block" href="#">View details »</a></p>
+                    </div>
+                    <div class="span3">
+                        <div class="thumbnail"
+                            <a href="#x" class="thumbnail" id="image3"> </a>
+                         </div>
+                         <h3>Product name</h3>
+			             <p><a class="btn btn-large btn-block" href="#">View details »</a></p>
+                    </div>
+                    <div class="span3">
+                        <div class="thumbnail"
+                            <a href="#x" class="thumbnail" id="image4"> </a>
+                         </div>
+                         <h3>Product name</h3>
+			             <p><a class="btn btn-large btn-block" href="#">View details »</a></p>
+                    </div>
+                </div>
+           </div>
             <div id="whoYouKnow" class="item active">
                <h3>Who you Know!</h3>
                <div style="width: 60%; margin-left:20%">
@@ -83,6 +122,25 @@
     var graphId = ['#whoYouKnow', '#globalTen'];
     var graphIdx = 0;
 
+    function appendImages(){
+        var names = $.parseHTML('{{ lowest_names }}');
+        names = names[0].textContent;
+        names = names.split(';');
+        var imgs = '{{ lowest_mugs }}';
+        imgs = imgs.split(';');
+        console.log(names);
+        console.log(imgs);
+        for(var i = 0; i < names.length; i++){
+            image = imgs[i];
+            $("#image"+[i]).append($("<a>",
+            {
+                href: "#",
+                html: $("<img>", { src: image })
+            }));
+        }
+
+    }
+
     function allActive(){
         for(var x = 0; x < graphId.length; x++){
             $(graphId[x]).addClass('active');
@@ -98,6 +156,8 @@
     }
 
     $(document).ready(function () {
+
+
         $('.carousel').carousel({
             interval: false
         });
@@ -106,10 +166,14 @@
             allActive();
             loadCharts();
             showGraph()
+
         });
 
         loadCharts();
         $('#globalTen').removeClass('active');
+
+        appendImages();
+
     });
 
     function whoYouKnowGraph(){
